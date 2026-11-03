@@ -1,22 +1,22 @@
 import pytest
 
-import shoppingbasket as sb
-import item
+from shoppingbasket import ShoppingBasket
+from item import Item
 
 @pytest.fixture
 def shopping_basket():
-    return sb.ShoppingBasket()
+    return ShoppingBasket()
 
 @pytest.fixture
 def apple_item():
-    return item.Item("Apple", "100g", 2.20)
+    return Item("Apple", "100g", 2.20)
 
 @pytest.fixture
 def multiple_items(apple_item):
     return [
         apple_item,
-        item.Item("Banana", "80g", 1.20),
-        item.Item("Cherry", "30g", 0.90),
+        Item("Banana", "80g", 1.20),
+        Item("Cherry", "30g", 0.90),
     ]
 
 def test_add_item(shopping_basket, apple_item):
