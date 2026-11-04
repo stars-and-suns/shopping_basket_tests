@@ -8,11 +8,17 @@ class ShoppingBasket:
 
     # A method to add an item to the shopping basket
     def addItem(self, item: Item, quantity=1):
-        self.items[item] = quantity
+        if quantity <= item.stock:
+            self.items[item] = quantity
+            item.stock -= quantity
+
+        else:
+            raise ValueError
 
     # A method to remove an item from the shopping basket (or reduce its quantity)
     def remove_item(self, item: Item, quantity=0):
         try:
+            item.stock += self.items[item].value()
             self.items.pop(item)
         except:
             raise KeyError
@@ -20,7 +26,9 @@ class ShoppingBasket:
     # A method to update the quantity of an item from the shopping basket
     def updateItem(self, item: Item, quantity: int):
         try:
+            item.stock += self.items[1]
             self.items[item] = quantity
+            item.stock -= quantity
         except:
             raise KeyError
 
@@ -35,6 +43,8 @@ class ShoppingBasket:
 
     # A method to empty the content of the basket
     def reset(self):
+        for key,value in self.items.items():
+            key.stock += value
         self.items: dict = {}
 
     # A method to return whether the basket is empty or not:

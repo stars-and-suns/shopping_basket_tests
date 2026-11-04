@@ -9,7 +9,7 @@ def shopping_basket():
 
 @pytest.fixture
 def apple_item():
-    return Item("Apple", "100g", 2.20)
+    return Item("Apple", "100g", 2.20, stock=9)
 
 @pytest.fixture
 def multiple_items(apple_item):
@@ -23,6 +23,15 @@ def multiple_items(apple_item):
 def test_add_item(shopping_basket, apple_item):
     shopping_basket.addItem(apple_item)
     assert apple_item in shopping_basket.items
+
+def test_add_item_affect_stock(shopping_basket, apple_item):
+    shopping_basket.addItem(apple_item)
+    assert apple_item in shopping_basket.items
+    assert apple_item.stock == 8
+
+def test_add_over_stock_item(shopping_basket, apple_item):
+    with pytest.raises(ValueError):
+        shopping_basket.addItem(apple_item, quantity=100)
 
 #
 def test_add_multiple_items(shopping_basket, multiple_items):
@@ -40,9 +49,23 @@ def test_remove_item(shopping_basket, apple_item, multiple_items):
 
     shopping_basket.remove_item(apple_item)
 
-    now_gone = initially_in not in shopping_basket.items
+    now_gone = apple_item not in shopping_basket.items
 
     assert initially_in and now_gone
+
+def test_remove_item_affects_stock(shopping_basket, apple_item, multiple_items):
+    for i in multiple_items:
+        shopping_basket.addItem(i)
+
+    initially_in = apple_item in shopping_basket.items
+    assert apple_item.stock == 8
+
+    shopping_basket.remove_item(apple_item)
+
+    now_gone = apple_item not in shopping_basket.items
+
+    assert initially_in and now_gone
+    assert apple_item.stock == 9
 
 #
 def test_update_item(shopping_basket, apple_item):
